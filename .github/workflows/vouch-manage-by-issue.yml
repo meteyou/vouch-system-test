@@ -29,15 +29,12 @@ jobs:
         id: vouch
         env:
           GITHUB_TOKEN: ${{ secrets.VOUCH_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          COMMENT_ID: ${{ github.event.comment.id }}
-          REPO: ${{ github.repository }}
         run: |
-          # Bypass the `vouch` wrapper: it builds the nushell command with
-          # `printf %q` (bash escaping), so it cannot pass multi-word arguments
-          # to nushell. Call nushell directly and quote the message as a nu string.
-          lib_dir="${VOUCH_LIB_DIR:-$(cd -- "$(dirname -- "$(command -v vouch)")/../.." && pwd)/vouch}"
-          output=$(nu --no-config-file -c "use \"$lib_dir\" *; gh-manage-by-issue $ISSUE_NUMBER $COMMENT_ID -R $REPO --dry-run=false --commit-message='chore(vouch): update VOUCHED contributors'")
+          output=$(vouch gh-manage-by-issue \
+            ${{ github.event.issue.number }} ${{ github.event.comment.id }} \
+            -R ${{ github.repository }} \
+            --dry-run=false \
+            --commit-message='chore(vouch): update VOUCHED contributors')
           
           echo "$output"
           echo "status=$(echo "$output" | tail -n1)" >> "$GITHUB_OUTPUT"
