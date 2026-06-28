@@ -1,0 +1,36 @@
+name: Vouch Manage by Issue
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: vouch-manage
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v6
+        with:
+          ref: 'main'
+          token: ${{ secrets.VOUCH_TOKEN }}
+
+      - name: Setup Vouch CLI-Tool
+        uses: mitchellh/vouch/action/setup-vouch@v1
+
+      - name: Execute Vouch Manage by Issue Action
+        env:
+          GITHUB_TOKEN: ${{ secrets.VOUCH_TOKEN }}
+        run: |
+          vouch gh-manage-by-issue \
+            ${{ github.event.issue.number }} ${{ github.event.comment.id }} \
+            -R ${{ github.repository }} \
+            --dry-run=false \
+            --commit-message 'chore(vouch): add contributor to VOUCHED.td'
