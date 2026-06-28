@@ -8,5 +8,4 @@
 #   - Denounce with minus prefix: -username or -platform:username.
 #   - Optional details after a space following the handle.
 meteyou
-mryel00
 prime-axiom
