@@ -36,7 +36,8 @@ jobs:
           # Bypass the `vouch` wrapper: it builds the nushell command with
           # `printf %q` (bash escaping), so it cannot pass multi-word arguments
           # to nushell. Call nushell directly and quote the message as a nu string.
-          output=$(nu --no-config-file -c "use \"$VOUCH_LIB_DIR\" *; gh-manage-by-issue $ISSUE_NUMBER $COMMENT_ID -R $REPO --dry-run=false --commit-message='chore(vouch): update VOUCHED contributors'")
+          lib_dir="${VOUCH_LIB_DIR:-$(cd -- "$(dirname -- "$(command -v vouch)")/../.." && pwd)/vouch}"
+          output=$(nu --no-config-file -c "use \"$lib_dir\" *; gh-manage-by-issue $ISSUE_NUMBER $COMMENT_ID -R $REPO --dry-run=false --commit-message='chore(vouch): update VOUCHED contributors'")
           
           echo "$output"
           echo "status=$(echo "$output" | tail -n1)" >> "$GITHUB_OUTPUT"
