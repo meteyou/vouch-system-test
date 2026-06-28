@@ -34,7 +34,7 @@ jobs:
             ${{ github.event.issue.number }} ${{ github.event.comment.id }} \
             -R ${{ github.repository }} \
             --dry-run=false \
-            --commit-message="'chore(vouch): update VOUCHED contributors'")
+            --commit-message='"chore(vouch): update VOUCHED contributors"')
           
           echo "$output"
           echo "status=$(echo "$output" | tail -n1)" >> "$GITHUB_OUTPUT"
